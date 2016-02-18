@@ -42,8 +42,9 @@ AppAsset::register($this);
         	['label' => 'Управление на потребители', 'url' => ['/admin/user'], 'items' => [
         		['label' => 'Потребители', 'url' => ['/admin/user']],
         		['label' => 'Позиции', 'url' => ['/admin/position']],
-        		['label' => 'Групи', 'url' => ['/admin/group']],
+        		['label' => 'Групи', 'url' => ['/admin/group']],	
     		]],
+        	['label' => 'Управление на избори', 'url' => ['/admin/election']],
             Yii::$app->user->isGuest ?
                 ['label' => 'Вход', 'url' => ['/admin/default/login']] :
                 [
