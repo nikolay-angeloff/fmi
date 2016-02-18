@@ -17,6 +17,8 @@ use Yii;
  */
 class Admin extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+	public $repeatpassword;
+	public $update;
 	
     /**
      * @inheritdoc
@@ -32,13 +34,15 @@ class Admin extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'username', 'email', 'password'], 'required'],
+            [['first_name', 'last_name', 'username', 'email',], 'required'],
+        	[['password', 'repeatpassword'], 'required'],
             [['first_name', 'last_name', 'username', 'email', 'password'], 'string', 'max' => 255],
-            [['username'], 'unique', 'targetAttribute' => ['username'], 'message' => 'The User Name is already taken.'],
-        	[['email'], 'unique', 'targetAttribute' => ['email'], 'message' => 'The email is already taken.']
+            [['username'], 'unique'],
+            [['email'], 'unique'],
+        	[['repeatpassword'], 'compare', 'compareAttribute'=>'password', 'message'=>"Passwords don't match"],
         ];
     }
-
+	
     /**
      * @inheritdoc
      */
@@ -51,6 +55,7 @@ class Admin extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'username' => 'User Name',
             'email' => 'Email',
             'password' => 'Password',
+        	'repeatpassword' => 'Confirm Password',
         ];
     }
     

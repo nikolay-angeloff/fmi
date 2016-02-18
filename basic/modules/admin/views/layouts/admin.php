@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use yii\widgets\Menu;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
@@ -15,7 +16,7 @@ AppAsset::register($this);
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
+    <meta charset="charset=utf-8"">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
@@ -36,12 +37,17 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/admin/default/index']],
-        	['label' => 'Administrators', 'url' => ['/admin/admin']],
+            ['label' => 'Начало', 'url' => ['/admin/default/index']],
+        	['label' => 'Администратори', 'url' => ['/admin/admin']],
+        	['label' => 'Управление на потребители', 'url' => ['/admin/user'], 'items' => [
+        		['label' => 'Потребители', 'url' => ['/admin/user']],
+        		['label' => 'Позиции', 'url' => ['/admin/position']],
+        		['label' => 'Групи', 'url' => ['/admin/group']],
+    		]],
             Yii::$app->user->isGuest ?
-                ['label' => 'Login', 'url' => ['/admin/default/login']] :
+                ['label' => 'Вход', 'url' => ['/admin/default/login']] :
                 [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                    'label' => 'Изход (' . Yii::$app->user->identity->username . ')',
                     'url' => ['/admin/default/logout'],
                     'linkOptions' => ['data-method' => 'post']
                 ],

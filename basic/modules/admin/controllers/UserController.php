@@ -3,17 +3,17 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\models\Admin;
-use yii\data\ActiveDataProvider;
+use app\models\User;
+use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 /**
- * AdminController implements the CRUD actions for Admin model.
+ * UserController implements the CRUD actions for User model.
  */
-class AdminController extends Controller
+class UserController extends Controller
 {
 	public function beforeAction($action)
 	{
@@ -32,7 +32,7 @@ class AdminController extends Controller
             ],
         	'access' => [
         			'class' => AccessControl::className(),
-       				'only' => ['index', 'view', 'create', 'update', 'delete'],
+      				'only' => ['index', 'view', 'create', 'update', 'delete'],
        				'rules' => [
        						[
        								'allow' => true,
@@ -45,22 +45,22 @@ class AdminController extends Controller
     }
 
     /**
-     * Lists all Admin models.
+     * Lists all User models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Admin::find(),
-        ]);
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Admin model.
+     * Displays a single User model.
      * @param integer $id
      * @return mixed
      */
@@ -72,25 +72,23 @@ class AdminController extends Controller
     }
 
     /**
-     * Creates a new Admin model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-	public function actionCreate()
+    public function actionCreate()
     {
-        $model = new Admin();
-		$model->update = false;
-		if ($model->load(Yii::$app->request->post())) {
-        	$model->password = md5($model->password);
-        	$model->repeatpassword = md5($model->repeatpassword);
+        $model = new User();
+        
+        if ($model->load(Yii::$app->request->post())) {
+        	$model->unique_id = time();
         	if($model->save()) {
             	return $this->redirect(['view', 'id' => $model->id]);
-        	}
-        	else {
-        		return $this->render('update', [
-        				'model' => $model,
-        		]);
-        	}
+        	} else {
+	            return $this->render('create', [
+	                'model' => $model,
+	            ]);
+	        }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -99,45 +97,26 @@ class AdminController extends Controller
     }
 
     /**
-     * Updates an existing Admin model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-	public function actionUpdate($id)
+    public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->update = true;
-        $prevPassword = $model->password;
-		$model->password = null;
-        
-        if ($model->load(Yii::$app->request->post())) {
-        	if(!$model->password) {
-	        	$model->password = md5($model->password);
-	        	$model->repeatpassword = md5($model->repeatpassword);
-        	}
-        	else {
-        		$model->password = $prevPassword;
-        		$model->repeatpassword = $prevPassword;
-        	}
-        	if($model->save()) {
-            	return $this->redirect(['view', 'id' => $model->id]);
-        	}
-        	else {
-        		return $this->render('update', [
-        				'model' => $model,
-        		]);
-        	}
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
             ]);
         }
     }
-    
 
     /**
-     * Deletes an existing Admin model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -150,15 +129,15 @@ class AdminController extends Controller
     }
 
     /**
-     * Finds the Admin model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Admin the loaded model
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Admin::findOne($id)) !== null) {
+        if (($model = User::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

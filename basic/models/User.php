@@ -2,102 +2,89 @@
 
 namespace app\models;
 
-class User extends \yii\base\Object implements \yii\web\IdentityInterface
+use Yii;
+
+/**
+ * This is the model class for table "user".
+ *
+ * @property integer $id
+ * @property integer $first_name
+ * @property integer $last_name
+ * @property string $email
+ * @property integer $position
+ * @property integer $group
+ * @property integer $unique_id
+ * @property integer $created_at
+ *
+ * @property Group $group0
+ * @property Position $position0
+ */
+class User extends \yii\db\ActiveRecord
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id)
+    public static function tableName()
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return 'user';
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function rules()
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param  string      $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return [
+            [['first_name', 'last_name', 'email', 'position', 'group', 'unique_id'], 'required'],
+            [['position', 'group', 'unique_id'], 'integer'],
+        	[['created_at'], 'safe'],
+            [['first_name', 'last_name', 'email'], 'string', 'max' => 255],
+        	[['email'], 'unique'],
+        	[['unique_id'], 'unique'],
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function getId()
+    public function attributeLabels()
     {
-        return $this->id;
+        return [
+            'id' => 'ID',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'email' => 'Email',
+            'position' => 'Position',
+            'group' => 'Group',
+        	'position0.title' => 'Position',
+        	'group0.title' => 'Group',
+            'unique_id' => 'Unique ID',
+            'created_at' => 'Created At',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroup0()
+    {
+        return $this->hasOne(Group::className(), ['id' => 'group']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPosition0()
+    {
+        return $this->hasOne(Position::className(), ['id' => 'position']);
     }
 
     /**
      * @inheritdoc
+     * @return UserQuery the active query used by this AR class.
      */
-    public function getAuthKey()
+    public static function find()
     {
-        return $this->authKey;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param  string  $password password to validate
-     * @return boolean if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return new UserQuery(get_called_class());
     }
 }

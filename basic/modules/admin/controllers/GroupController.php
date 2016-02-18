@@ -3,7 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\models\Admin;
+use app\models\Group;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -11,9 +11,9 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 /**
- * AdminController implements the CRUD actions for Admin model.
+ * GroupController implements the CRUD actions for Group model.
  */
-class AdminController extends Controller
+class GroupController extends Controller
 {
 	public function beforeAction($action)
 	{
@@ -45,13 +45,13 @@ class AdminController extends Controller
     }
 
     /**
-     * Lists all Admin models.
+     * Lists all Group models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Admin::find(),
+            'query' => Group::find(),
         ]);
 
         return $this->render('index', [
@@ -60,7 +60,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Displays a single Admin model.
+     * Displays a single Group model.
      * @param integer $id
      * @return mixed
      */
@@ -72,25 +72,16 @@ class AdminController extends Controller
     }
 
     /**
-     * Creates a new Admin model.
+     * Creates a new Group model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-	public function actionCreate()
+    public function actionCreate()
     {
-        $model = new Admin();
-		$model->update = false;
-		if ($model->load(Yii::$app->request->post())) {
-        	$model->password = md5($model->password);
-        	$model->repeatpassword = md5($model->repeatpassword);
-        	if($model->save()) {
-            	return $this->redirect(['view', 'id' => $model->id]);
-        	}
-        	else {
-        		return $this->render('update', [
-        				'model' => $model,
-        		]);
-        	}
+        $model = new Group();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -99,45 +90,26 @@ class AdminController extends Controller
     }
 
     /**
-     * Updates an existing Admin model.
+     * Updates an existing Group model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
-	public function actionUpdate($id)
+    public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->update = true;
-        $prevPassword = $model->password;
-		$model->password = null;
-        
-        if ($model->load(Yii::$app->request->post())) {
-        	if(!$model->password) {
-	        	$model->password = md5($model->password);
-	        	$model->repeatpassword = md5($model->repeatpassword);
-        	}
-        	else {
-        		$model->password = $prevPassword;
-        		$model->repeatpassword = $prevPassword;
-        	}
-        	if($model->save()) {
-            	return $this->redirect(['view', 'id' => $model->id]);
-        	}
-        	else {
-        		return $this->render('update', [
-        				'model' => $model,
-        		]);
-        	}
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
             ]);
         }
     }
-    
 
     /**
-     * Deletes an existing Admin model.
+     * Deletes an existing Group model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -150,15 +122,15 @@ class AdminController extends Controller
     }
 
     /**
-     * Finds the Admin model based on its primary key value.
+     * Finds the Group model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Admin the loaded model
+     * @return Group the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Admin::findOne($id)) !== null) {
+        if (($model = Group::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
