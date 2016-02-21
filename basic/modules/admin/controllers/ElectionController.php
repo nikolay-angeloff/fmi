@@ -4,6 +4,8 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Election;
+use app\models\UserSearch;
+use app\models\Candidate;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -66,8 +68,18 @@ class ElectionController extends Controller
      */
     public function actionView($id)
     {
+    	$model = $this->findModel($id);
+    	$searchModel = new UserSearch();
+    	$searchModel->isCandidateList = true;
+    	
+    	$searchModel->candidatesQuery = $model->getUsers();
+    	$searchModel->electionId = $id;
+    	
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model, 
+        	'searchModel' => $searchModel,
+        	'dataProvider' => $searchModel->search(Yii::$app->request->queryParams),
+        	'electionId' => $id,
         ]);
     }
 
@@ -120,6 +132,33 @@ class ElectionController extends Controller
 
         return $this->redirect(['index']);
     }
+    
+    /**
+     * Removes a candidate.
+     * @param integer $userId
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionRemoveCandidate($userId, $electionId) {
+    	Candidate::findOne(['user_id' => $userId, 'election_id' => $electionId]	)->delete();
+    	return $this->redirect(['view', 'id' => $model->id]);
+    }
+    
+    /**
+     * List of possible candidates.
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionAddCandidateList($electionId) {
+    	$model = $this->findModel($electionId);
+    	$searchModel = new UserSearch();
+    	
+        return $this->render('view', [
+            'model' => $model, 
+        	'searchModel' => $searchModel,
+        	'dataProvider' => $searchModel->search(Yii::$app->request->queryParams),
+        ]);
+    }
 
     /**
      * Finds the Election model based on its primary key value.
@@ -136,4 +175,5 @@ class ElectionController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+   	
 }

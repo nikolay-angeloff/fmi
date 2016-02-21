@@ -1,28 +1,24 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
-use app\models\Position;
-use app\models\Group;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\UserSearch */
+/* @var $searchModel app\models\ElectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Users';
+$this->title = 'Потребители';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="user-index">
+<div class="election-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Election', ['view'], ['class' => 'btn btn-success']) ?>
     </p>
-	
-	
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -44,8 +40,22 @@ $this->params['breadcrumbs'][] = $this->title;
         	],
             'unique_id',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
+        	[
+        		'class' => 'yii\grid\ActionColumn',
+			    'template' => '{delete}',
+			    'buttons' => [
+			          'delete' => function ($url, $model, $id) {
+			               return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, ['title' => Yii::t('app', 'Remove Candidate')]);
+			          },
+				],
+				'urlCreator' => function ($action, $model, $key, $index) {
+					if ($action === 'delete') {
+						$url = Url::to(['/admin/election/remove-candidate', 'userId' => $model->id, 'electionId' => $this->title]);
+						return $url;
+					}	
+				}
+        	],
+    	]	
     ]); ?>
 
 </div>

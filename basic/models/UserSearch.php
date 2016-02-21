@@ -12,6 +12,10 @@ use app\models\User;
  */
 class UserSearch extends User
 {
+	public  $isCandidateList = false;
+	public $candidatesQuery;
+	public $electionId;
+	
     /**
      * @inheritdoc
      */
@@ -41,8 +45,13 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
-
+    	if($this->isCandidateList) {
+        	$query = $this->candidatesQuery;
+    	}
+    	else {
+    		$query = User::find();
+    	}
+		
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -68,4 +77,5 @@ class UserSearch extends User
 
         return $dataProvider;
     }
+    
 }
