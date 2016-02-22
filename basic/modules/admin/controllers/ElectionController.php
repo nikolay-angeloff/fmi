@@ -6,6 +6,8 @@ use Yii;
 use app\models\Election;
 use app\models\UserSearch;
 use app\models\Candidate;
+use app\models\Group;
+use app\models\Voter;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -34,11 +36,15 @@ class ElectionController extends Controller
             ],
         	'access' => [
         			'class' => AccessControl::className(),
-       				'only' => ['index', 'view', 'create', 'update', 'delete'],
+       				'only' => ['index', 'view', 'create', 'update', 'delete', 
+       						'add-candidate-list', 'add-candidate', 'remove-candidate',
+       						'add-group-list', 'add-group', 'remove-group'],
        				'rules' => [
        						[
        								'allow' => true,
-       								'actions' => ['index', 'view', 'create', 'update', 'delete'],
+       								'actions' => ['index', 'view', 'create', 'update', 'delete', 
+       										'add-candidate-list', 'add-candidate', 'remove-candidate', 
+       										'add-group-list', 'add-group', 'remove-group'],
        								'roles' => ['@'],
        						],
        				],
@@ -75,10 +81,15 @@ class ElectionController extends Controller
     	$searchModel->candidatesQuery = $model->getUsers();
     	$searchModel->electionId = $id;
     	
+    	$groupDataProvider = new ActiveDataProvider([
+    			'query' => $model->getGroups(),
+    	]);
+    	
         return $this->render('view', [
             'model' => $model, 
         	'searchModel' => $searchModel,
         	'dataProvider' => $searchModel->search(Yii::$app->request->queryParams),
+        	'groupDataProvider' => $groupDataProvider,
         	'electionId' => $id,
         ]);
     }
@@ -141,7 +152,7 @@ class ElectionController extends Controller
      */
     public function actionRemoveCandidate($userId, $electionId) {
     	Candidate::findOne(['user_id' => $userId, 'election_id' => $electionId]	)->delete();
-    	return $this->redirect(['view', 'id' => $model->id]);
+    	return $this->redirect(['view', 'id' => $electionId]);
     }
     
     /**
@@ -153,11 +164,68 @@ class ElectionController extends Controller
     	$model = $this->findModel($electionId);
     	$searchModel = new UserSearch();
     	
-        return $this->render('view', [
+        return $this->render('add-candidate-list', [
             'model' => $model, 
         	'searchModel' => $searchModel,
+        	'electionId' => $electionId,
         	'dataProvider' => $searchModel->search(Yii::$app->request->queryParams),
         ]);
+    }
+    
+    /**
+     * Adds a candidate.
+     * @param integer $userId
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionAddCandidate($userId, $electionId) {
+    	$candidate = new Candidate();
+    	$candidate->election_id = $electionId;
+    	$candidate->user_id = $userId;
+    	$candidate->save();
+    	return $this->redirect(['add-candidate-list', 'electionId' => $electionId]);
+    }
+    
+    /**
+     * Removes a group.
+     * @param integer $groupId
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionRemoveGroup($groupId, $electionId) {
+    	Voter::findOne(['group_id' => $groupId, 'election_id' => $electionId])->delete();
+    	return $this->redirect(['view', 'id' => $electionId]);
+    }
+    
+    /**
+     * List of possible voters groups.
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionAddGroupList($electionId) {
+    	$model = $this->findModel($electionId);
+    	$dataProvider = new ActiveDataProvider([
+    			'query' => Group::find(),
+    	]);
+    	
+    	return $this->render('add-group-list', [
+    			'model' => $model,
+    			'dataProvider' => $dataProvider,
+    	]);
+    }
+    
+    /**
+     * Adds a group.
+     * @param integer $groupId
+     * @param integer $electionId
+     * @return mixed
+     */
+    public function actionAddGroup($groupId, $electionId) {
+    	$voter = new Voter();
+    	$voter->election_id = $electionId;
+    	$voter->group_id = $groupId;
+    	$voter->save();
+    	return $this->redirect(['add-group-list', 'electionId' => $electionId]);
     }
 
     /**

@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//basic/modules/admin/views/election/add-candidate-list.php=UTF-8
+encoding//basic/modules/admin/views/election/add-group-list.php=UTF-8
 encoding//basic/modules/admin/views/election/view.php=UTF-8
 encoding//basic/modules/admin/views/group/view.php=UTF-8
 encoding//basic/modules/admin/views/layouts/admin.php=UTF-8

@@ -19,6 +19,8 @@ use Yii;
  * @property Result[] $results
  * @property Vote[] $votes
  * @property User[] $users0
+ ** @property Voter[] $voters
+ * @property Group[] $groups
  */
 class Election extends \yii\db\ActiveRecord
 {
@@ -97,13 +99,29 @@ class Election extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Vote::className(), ['election_id' => 'id']);
     }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getUsers0()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable('vote', ['election_id' => 'id']);
+    	return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable('vote', ['election_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVoters()
+    {
+    	return $this->hasMany(Voter::className(), ['election_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroups()
+    {
+    	return $this->hasMany(Group::className(), ['id' => 'group_id'])->viaTable('voter', ['election_id' => 'id']);
     }
 
     /**

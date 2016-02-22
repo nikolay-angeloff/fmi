@@ -11,7 +11,8 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\Election */
 
-$this->title = $model->id;
+$this->title = $model->name;
+$this->params['electionId'] = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Elections', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->name;
 ?>
@@ -42,7 +43,7 @@ $this->params['breadcrumbs'][] = $model->name;
 		    ],
         ],
     ]) ?>
-    
+    <br/>
     <h2>Кандидати</h2>
     
     <?= GridView::widget([
@@ -76,7 +77,7 @@ $this->params['breadcrumbs'][] = $model->name;
 				],
 				'urlCreator' => function ($action, $model, $key, $index) {
 					if ($action === 'delete') {
-						$url = Url::to(['/admin/election/remove-candidate', 'userId' => $model->id, 'electionId' => $this->title]);
+						$url = Url::to(['/admin/election/remove-candidate', 'userId' => $model->id, 'electionId' => $this->params['electionId']]);
 						return $url;
 					}	
 				}
@@ -86,6 +87,39 @@ $this->params['breadcrumbs'][] = $model->name;
     
     <p>
         <?= Html::a('Добави кандидати', ['add-candidate-list', 'electionId' => $model->id], ['class' => 'btn btn-primary']) ?>
+    </p>
+    <br/>
+    <h2>Групи от избиратели</h2>
+    
+    <p>Ако няма избрани групи, всички потребители имат право да гласуват!</p>
+    
+    <?= GridView::widget([
+        'dataProvider' => $groupDataProvider,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+        		
+            'title',
+
+        	[
+        		'class' => 'yii\grid\ActionColumn',
+			    'template' => '{delete}',
+			    'buttons' => [
+			          'delete' => function ($url, $model, $id) {
+			               return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, ['title' => Yii::t('app', 'Remove Candidate')]);
+			          },
+				],
+				'urlCreator' => function ($action, $model, $key, $index) {
+					if ($action === 'delete') {
+						$url = Url::to(['/admin/election/remove-group', 'groupId' => $model->id, 'electionId' => $this->params['electionId']]);
+						return $url;
+					}	
+				}
+        	],
+    	]	
+    ]); ?>
+    
+    <p>
+        <?= Html::a('Добави групи', ['add-group-list', 'electionId' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
 
 </div>
