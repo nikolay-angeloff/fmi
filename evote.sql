@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2016 at 12:00 AM
+-- Generation Time: Feb 22, 2016 at 11:38 PM
 -- Server version: 5.5.36
 -- PHP Version: 5.4.27
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 
 INSERT INTO `admin` (`id`, `first_name`, `last_name`, `username`, `email`, `password`) VALUES
 (7, 'Niki', 'Angelov', 'admin', 'admin@admin.com', '643f29880a299c2c393244944d83d144'),
-(8, 'РќРёРєРѕР»Р°Р№', 'РђРЅРіРµР»РѕРІ', 'niki', 'niki@niki.com', 'n1k12010'),
+(8, 'Николай', 'Ангелов', 'niki', 'niki@niki.com', 'n1k12010'),
 (11, 'sad', 'asd', 'asd', 'admina', 'd41d8cd98f00b204e9800998ecf8427e'),
 (12, 'Bistra', 'Angelova', 'bistra', 'bistra86@gmail.com', 'e8e663553e207ff7116e10e21bf1d3ab');
 
@@ -61,6 +61,13 @@ CREATE TABLE IF NOT EXISTS `candidate` (
   KEY `election_id_2` (`election_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `candidate`
+--
+
+INSERT INTO `candidate` (`election_id`, `user_id`) VALUES
+(2, 4);
 
 -- --------------------------------------------------------
 
@@ -84,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `election` (
 --
 
 INSERT INTO `election` (`id`, `name`, `start_date`, `end_date`, `is_active`, `created_at`) VALUES
-(2, 'РР·Р±РѕСЂ РЅР° СЃС‚СѓРґРµРЅС‚СЃРєРё СЃСЉРІРµС‚', '2016-02-01 22:00:00', '2016-02-03 22:00:00', 0, '2016-02-18 21:10:10');
+(2, 'Избор на студентски съвет', '2016-02-01 22:00:00', '2016-02-03 22:00:00', 0, '2016-02-18 21:10:10');
 
 -- --------------------------------------------------------
 
@@ -105,10 +112,10 @@ CREATE TABLE IF NOT EXISTS `group` (
 --
 
 INSERT INTO `group` (`id`, `title`, `created_at`) VALUES
-(1, 'РљР°С‚РµРґСЂР° РРЅС„РѕСЂРјР°С†РёРѕРЅРЅРё РўРµС…РЅРѕР»РѕРіРёРё', '2016-02-18 11:47:38'),
-(2, 'РљР°С‚РµРґСЂР° РђР»РіРµР±СЂР°', '2016-02-18 11:47:55'),
-(3, 'РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ', '2016-02-18 11:48:18'),
-(4, 'РЎС‚СѓРґРµРЅС‚СЃРєРё СЃСЉРІРµС‚', '2016-02-18 21:07:08');
+(1, 'Катедра Информационни Технологии', '2016-02-18 11:47:38'),
+(2, 'Катедра Алгебра', '2016-02-18 11:47:55'),
+(3, 'Администрация', '2016-02-18 11:48:18'),
+(4, 'Студентски съвет', '2016-02-18 21:07:08');
 
 -- --------------------------------------------------------
 
@@ -129,10 +136,10 @@ CREATE TABLE IF NOT EXISTS `position` (
 --
 
 INSERT INTO `position` (`id`, `title`, `created_at`) VALUES
-(1, 'Р”РµРєР°РЅ', '2016-02-18 11:36:01'),
-(2, 'Р СЉРєРѕРІРѕРґРёС‚РµР» РєР°С‚РµРґСЂР°', '2016-02-18 11:36:29'),
-(3, 'РџСЂРѕС„РµСЃРѕСЂ', '2016-02-18 11:36:44'),
-(4, 'РЎС‚СѓРґРµРЅС‚', '2016-02-18 21:06:00');
+(1, 'Декан', '2016-02-18 11:36:01'),
+(2, 'Ръководител катедра', '2016-02-18 11:36:29'),
+(3, 'Професор', '2016-02-18 11:36:44'),
+(4, 'Студент', '2016-02-18 21:06:00');
 
 -- --------------------------------------------------------
 
@@ -180,8 +187,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`id`, `first_name`, `last_name`, `email`, `position`, `group`, `unique_id`, `created_at`) VALUES
 (1, 'sad', 'asdas', 'dasd@asd.daa', 3, 2, 1455800808, '2016-02-18 13:06:48'),
 (2, 'asdas', 'asdda', 'dasd@asd.daa1', 1, 1, 1455801170, '2016-02-18 13:12:50'),
-(3, 'РўРµСЃС‚', 'РўРµСЃС‚', 'dasd@asd.daa12', 2, 3, 1455811636, '2016-02-18 16:07:16'),
-(4, 'РРІР°РЅС‡Рѕ', 'РџРµС‚СЂРѕРІ', 'РґР°СЃРґР°РґР°', 4, 4, 1455829701, '2016-02-18 21:08:21');
+(3, 'Тест', 'Тест', 'dasd@asd.daa12', 2, 3, 1455811636, '2016-02-18 16:07:16'),
+(4, 'Иванчо', 'Петров', 'дасдада', 4, 4, 1455829701, '2016-02-18 21:08:21');
 
 -- --------------------------------------------------------
 
@@ -196,6 +203,27 @@ CREATE TABLE IF NOT EXISTS `vote` (
   KEY `election_id_2` (`election_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `voter`
+--
+
+CREATE TABLE IF NOT EXISTS `voter` (
+  `election_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  UNIQUE KEY `election_grouo` (`election_id`,`group_id`),
+  KEY `election_id` (`election_id`),
+  KEY `group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `voter`
+--
+
+INSERT INTO `voter` (`election_id`, `group_id`) VALUES
+(2, 3);
 
 --
 -- Constraints for dumped tables
@@ -228,6 +256,13 @@ ALTER TABLE `user`
 ALTER TABLE `vote`
   ADD CONSTRAINT `vote_ibfk_1` FOREIGN KEY (`election_id`) REFERENCES `election` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `voter`
+--
+ALTER TABLE `voter`
+  ADD CONSTRAINT `voter_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `voter_ibfk_1` FOREIGN KEY (`election_id`) REFERENCES `election` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
