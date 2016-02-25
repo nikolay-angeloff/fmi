@@ -164,6 +164,15 @@ class ElectionController extends Controller
     	$model = $this->findModel($electionId);
     	$searchModel = new UserSearch();
     	
+    	$users = $model->users;
+    	
+    	foreach ($users as $user) {
+    		$userIds[] = $user->id;
+    	}
+    	
+    	$searchModel->addCandidateFlag = true;
+    	$searchModel->ids = $userIds;
+    	
         return $this->render('add-candidate-list', [
             'model' => $model, 
         	'searchModel' => $searchModel,
@@ -204,8 +213,15 @@ class ElectionController extends Controller
      */
     public function actionAddGroupList($electionId) {
     	$model = $this->findModel($electionId);
+
+    	$groups = $model->groups;
+    	 
+    	foreach ($groups as $group) {
+    		$groupIds[] = $group->id;
+    	}
+    	
     	$dataProvider = new ActiveDataProvider([
-    			'query' => Group::find(),
+    			'query' => Group::find()->where(['not in', 'id', $groupIds]),
     	]);
     	
     	return $this->render('add-group-list', [

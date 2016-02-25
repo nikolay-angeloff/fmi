@@ -16,6 +16,9 @@ class UserSearch extends User
 	public $candidatesQuery;
 	public $electionId;
 	
+	public $addCandidateFlag = false;
+	public $ids;
+	
     /**
      * @inheritdoc
      */
@@ -50,8 +53,13 @@ class UserSearch extends User
     	}
     	else {
     		$query = User::find();
+    		if($this->addCandidateFlag) {
+    			
+    			$query->where(['not in', 'id', $this->ids]);
+    		}
     	}
 		
+    	
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

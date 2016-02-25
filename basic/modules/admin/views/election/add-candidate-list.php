@@ -12,6 +12,7 @@ use app\models\Group;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Добавяне на кандидати';
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['electionId'] = $model->id;
 ?>
